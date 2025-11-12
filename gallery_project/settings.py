@@ -90,12 +90,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-# Local development ke liye static files ka path
-STATICFILES_DIRS = [
-    BASE_DIR / 'photos' / 'static',
-]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'photos' / 'static']  # Optional if you keep static inside app
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Required for Render
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
