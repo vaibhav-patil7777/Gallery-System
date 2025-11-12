@@ -1,3 +1,13 @@
+Django==5.0.6
+gunicorn==21.2.0
+pillow==10.3.0
+whitenoise==6.6.0
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+djangorestframework==3.15.1
+django-cors-headers==4.3.1
+
+
 asgiref==3.9.2
 certifi==2025.10.5
 cffi==2.0.0
