@@ -1,278 +1,205 @@
-/* General Body Styles */
+/* ==================== GENERAL BODY ==================== */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f4f6f8;
+    background: linear-gradient(to bottom, #f4f6f8, #e9ecef);
     margin: 0;
     padding: 20px;
+    color: #343a40;
 }
 
-/* Main content container */
+/* ==================== MAIN CONTAINER ==================== */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    padding: 25px 35px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
-/* Welcome heading */
+/* ==================== HEADINGS ==================== */
 h1 {
-    font-size: 28px;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 32px;
+    color: #212529;
+    margin-bottom: 25px;
+    font-weight: 700;
 }
 
-/* Container for tabs and logout button */
+/* ==================== TABS & LOGOUT ==================== */
 .tabs-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #dee2e6;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .tabs-left {
     display: flex;
+    gap: 15px;
 }
 
 .tab-link {
-    padding: 12px 16px;
+    padding: 12px 18px;
     text-decoration: none;
-    color: #555;
+    color: #6c757d;
     font-size: 16px;
     font-weight: 500;
     border-bottom: 3px solid transparent;
-    margin-bottom: -1px; /* Aligns border with container's border */
+    margin-bottom: -1px;
+    transition: all 0.3s ease;
 }
 
-/* Style for the active tab */
 .tab-link.active {
     color: #0d6efd;
     border-bottom-color: #0d6efd;
 }
 
-/* The new Logout Button Style */
 .logout-btn {
-    background-color: #6f42c1; /* A nice purple */
+    background: linear-gradient(135deg, #6f42c1, #5a3d9a);
     color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
     font-weight: 500;
     font-size: 14px;
-    transition: background-color 0.2s ease;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
-    background-color: #5a3d9a;
+    background: linear-gradient(135deg, #5a3d9a, #482b7b);
+    transform: translateY(-2px);
 }
 
-/* Styling the upload form */
+/* ==================== UPLOAD FORM ==================== */
 .upload-form form {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 30px;
+    background: rgba(255,255,255,0.85);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 35px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .upload-form button {
-    background-color: #198754; /* Green */
+    background: linear-gradient(135deg, #198754, #145c40);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 10px 18px;
+    border-radius: 8px;
     font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Photo Grid and Cards */
+.upload-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ==================== PHOTO GRID ==================== */
 .photo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
 .photo-card {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: relative;
+    border-radius: 15px;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .photo-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
 }
 
 .photo-card img {
     width: 100%;
-    height: 200px;
-    object-fit: cover; /* Prevents images from stretching */
+    height: 220px;
+    object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
 }
 
-.empty-gallery-message {
-    color: #777;
-    font-size: 16px;
+.photo-card:hover img {
+    transform: scale(1.05);
 }
 
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top of everything */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.9); /* Black with 90% opacity */
-    /* display: flex;    */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Modal Content (The Image) */
-.modal-content {
-    margin: auto;
-    display: block;
-    max-width: 80%;
-    max-height: 80vh;
-    animation-name: zoom;
-    animation-duration: 0.3s;
-}
-
-/* Animation for the zoom-in effect */
-@keyframes zoom {
-    from {transform: scale(0)}
-    to {transform: scale(1)}
-}
-
-/* The Close Button (×) */
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: #bbb;
-    text-decoration: none;
-}
-
-/* ... your existing CSS ... */
-
-/* Update .photo-card to be a positioning context */
-.photo-card {
-    position: relative; /* This is necessary for positioning the button inside */
-    border: 1px solid #eee;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* New CSS for the delete form and button */
-.delete-form {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-}
-
-.delete-btn {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%; /* Makes the button circular */
-    width: 28px;
-    height: 28px;
-    font-size: 20px;
-    line-height: 28px;
-    text-align: center;
-    cursor: pointer;
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.2s ease;
-}
-
-/* Show the delete button when hovering over the photo card */
-.photo-card:hover .delete-btn {
-    opacity: 1;
-}
-
-.photo-card .photo-actions {
+/* ==================== OVERLAYS & ACTION BUTTONS ==================== */
+.photo-actions {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
-    opacity: 0; /* Hidden by default */
+    opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .photo-card:hover .photo-actions {
-    opacity: 1; /* Show on hover */
-}
-
-.photo-actions form {
-    margin: 0;
+    opacity: 1;
 }
 
 .photo-actions button {
     border: none;
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 8px;
     color: white;
     font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-restore {
-    background-color: #0d6efd; /* Blue */
+    background: #0d6efd;
+}
+
+.btn-restore:hover {
+    background: #0b5ed7;
 }
 
 .btn-delete-perm {
-    background-color: #dc3545; /* Red */
+    background: #dc3545;
 }
 
+.btn-delete-perm:hover {
+    background: #c82333;
+}
+
+/* ==================== ALBUM GRID ==================== */
 .album-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 25px;
 }
 
 .album-card-wrapper {
     position: relative;
     display: flex;
     flex-direction: column;
-    text-decoration: none; /* Make sure the wrapper itself is not underlined */
-}
-
-.album-card {
     text-decoration: none;
-    color: #343a40;
 }
 
 .album-thumbnail {
     height: 160px;
     border-radius: 12px;
     margin-bottom: 0.75rem;
-    overflow: hidden; /* Very important */
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid #e9ecef;
-    background-color: #f8f9fa; /* Background for empty albums */
+    background: rgba(248,249,250,0.8);
+    backdrop-filter: blur(6px);
 }
 
 .album-card-wrapper:hover .album-thumbnail {
@@ -280,57 +207,30 @@ h1 {
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-/* --- FIX: Remove any unwanted overlays or text --- */
-.album-thumbnail::before,
-.album-thumbnail::after {
-    content: none !important;
-    display: none !important;
-}
-
 .album-title {
     font-weight: 600;
-    color: #343a40;
+    color: #212529;
     text-align: center;
     padding: 0 5px;
 }
 
-.album-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.album-thumbnail-empty {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #adb5bd;
-    font-size: 14px;
-    font-style: italic;
-}
-
-
-.favourite-form {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-}
-
+/* ==================== FAVORITE BUTTON ==================== */
 .favourite-btn {
-    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.5);
     border: none;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 6px;
-    opacity: 0.7;
-    transition: all 0.2s ease;
+    opacity: 0.8;
+    transition: all 0.3s ease;
 }
 
 .photo-card:hover .favourite-btn {
@@ -344,28 +244,91 @@ h1 {
 }
 
 .favourite-btn.active svg {
-    fill: #ffc107; /* Yellow fill for active favourite */
+    fill: #ffc107;
     stroke: #ffc107;
 }
 
-.date-group {
-    margin-bottom: 2.5rem; /* Add space between date sections */
-}
-
-.date-header {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #e9ecef;
-}
-
-/* photos/static/photos/css/gallery.css ke neeche add karein */
-
-.video-thumbnail {
+/* ==================== MODAL ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
     width: 100%;
-    height: 220px;
-    object-fit: cover;
-    background-color: #111;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 12px;
+    animation: zoom 0.3s ease;
+}
+
+@keyframes zoom {
+    from { transform: scale(0) }
+    to { transform: scale(1) }
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #ffc107;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+    .photo-grid, .album-grid {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .photo-grid, .album-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .tabs-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .photo-grid, .album-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .upload-form form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .photo-card img {
+        height: 150px;
+    }
+
+    .album-thumbnail {
+        height: 140px;
+    }
 }

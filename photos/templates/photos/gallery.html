@@ -2,116 +2,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My Gallery</title>
-    <link rel="stylesheet" href="{% static 'photos/css/gallery.css' %}  ">
+<meta charset="UTF-8">
+<title>My Gallery</title>
+<style>
+/* ===== BODY & CONTAINER ===== */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+    margin: 0;
+    padding: 20px;
+    color: #e0e0e0;
+}
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 25px 35px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* ===== HEADER ===== */
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    color: #00ffb3;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px #00ffb3, 0 0 25px #00d4ff;
+}
+
+/* ===== TABS ===== */
+.tabs-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.tabs-left {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.tab-link {
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    color: #b0b0b0;
+}
+
+.tab-link.active {
+    color: #fff;
+    background: linear-gradient(45deg, #00ffb3, #00d4ff);
+    box-shadow: 0 0 10px #00ffb3, 0 0 20px #00d4ff;
+}
+
+.tab-link:hover {
+    color: #fff;
+    background: rgba(0,255,179,0.2);
+}
+
+.logout-btn {
+    padding: 8px 20px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #ff3cac, #784ba0);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    box-shadow: 0 0 10px #ff3cac, 0 0 20px #784ba0;
+}
+
+/* ===== UPLOAD FORM & PROGRESS ===== */
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+select.album-select, input[type="file"] {
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-weight: 500;
+}
+
+select.album-select option {
+    color: #000;
+}
+
+button[type="submit"] {
+    padding: 10px 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #00ffb3, #00d4ff);
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    box-shadow: 0 0 10px #00ffb3, 0 0 20px #00d4ff;
+    transform: translateY(-2px);
+}
+
+/* Progress bar */
+.progress-container {
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 10px;
+    height: 12px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(45deg, #00ffb3, #00d4ff);
+    transition: width 0.3s ease;
+}
+
+/* ===== GALLERY ===== */
+.gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.date-header {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffdc00;
+    text-shadow: 0 0 8px #ffdc00, 0 0 15px #ffdc00;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.photo-card {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+}
+
+.photo-card img, .photo-card video {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    border-radius: 18px;
+    transition: transform 0.3s ease;
+}
+
+/* Favourite Button */
+.favourite-form {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.favourite-btn {
+    background: rgba(0,0,0,0.6);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    box-shadow: 0 0 10px #ffdc00;
+    transition: all 0.3s ease;
+}
+
+.favourite-btn svg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.5;
+}
+
+.favourite-btn.active svg {
+    fill: #ffdc00;
+    stroke: #ffdc00;
+}
+
+/* Delete Button */
+.delete-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.delete-btn {
+    background: rgba(255,0,0,0.8);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: rgba(255,0,0,1);
+    transform: scale(1.1);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.95);
+}
+
+.modal-content {
+    max-width: 80%;
+    max-height: 80vh;
+    border-radius: 15px;
+    animation: zoom 0.3s ease;
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #ffdc00;
+}
+
+.empty-gallery-message {
+    text-align: center;
+    color: #aaa;
+    font-size: 16px;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 26px; }
+    .photo-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+}
+</style>
 </head>
 <body>
-    <!-- Add this main container div -->
-    <div class="container">
+<div class="container">
 
-        <h1>Welcome to Your Gallery, {{ user.username }}!</h1>
+<h1>Welcome to Your Gallery, {{ user.username }}!</h1>
 
-        <div class="tabs-container">
-            <div class="tabs-left">
-                <a href="{% url 'gallery' %}" class="tab-link active">All Photos</a>
-                <a href="{% url 'album-list' %}" class="tab-link">Collections</a>
-                <a href="{% url 'search' %}" class="tab-link">Search</a>
+<div class="tabs-container">
+    <div class="tabs-left">
+        <a href="{% url 'gallery' %}" class="tab-link active">All Media</a>
+        <a href="{% url 'album-list' %}" class="tab-link">Collections</a>
+        <a href="{% url 'search' %}" class="tab-link">Search</a>
+    </div>
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+</div>
+
+<form id="uploadForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <select name="album_select" class="album-select">
+        <option value="">-- Add to Album (Optional) --</option>
+        {% for album in albums %}
+            <option value="{{ album.id }}">{{ album.title }}</option>
+        {% endfor %}
+    </select>
+    <input type="file" name="media_files" accept="image/*,video/*" multiple required>
+    <button type="submit">Upload Media</button>
+</form>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="gallery-container">
+    {% for upload_date, media_on_day in grouped_photos.items %}
+    <div class="date-group">
+        <h2 class="date-header">{{ upload_date|date:"D, M j" }}</h2>
+        <div class="photo-grid">
+            {% for media in media_on_day %}
+            <div class="photo-card">
+                {% if media.is_video %}
+                    <video src="{{ media.video_file.url }}" controls></video>
+                {% else %}
+                    <img src="{{ media.image.url }}" alt="Media by {{ user.username }}">
+                {% endif %}
+                <form method="post" action="{% url 'toggle-favourite' media.id %}" class="favourite-form">
+                    {% csrf_token %}
+                    <button type="submit" class="favourite-btn {% if media.is_favourite %}active{% endif %}" title="Favourite">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </button>
+                </form>
+                <form method="post" action="{% url 'delete-photo' media.id %}" class="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-btn" title="Delete">&times;</button>
+                </form>
             </div>
-            <!-- Change the class of the logout link to 'logout-btn' -->
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-        </div>
-
-        <!-- Add a wrapper for the form -->
-       <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <select name="album_select" class="album-select">
-                <option value="">-- Add to Album (Optional) --</option>
-                {% for album in albums %}
-                    <option value="{{ album.id }}">{{ album.title }}</option>
-                {% endfor %}
-            </select>
-            
-            <!-- YAHAN CHANGES HAIN -->
-            <input type="file" name="media_files" accept="image/*,video/*" multiple required>
-            
-            <button type="submit">Upload Media</button>
-        </form>
-        
-
-        <!-- Replace the old photo-grid div with this new structure -->
-        <div class="gallery-container">
-            {% for upload_date, photos_on_day in grouped_photos.items %}
-                <div class="date-group">
-                    <!-- Display the date header, formatted nicely -->
-                    <h2 class="date-header">{{ upload_date|date:"D, M j" }}</h2>
-                    
-                    <!-- This is the grid for photos from a specific day -->
-                    <div class="photo-grid">
-                        {% for photo in photos_on_day %}
-                            <div class="photo-card">
-                                <img src="{{ photo.image.url }}" alt="Photo by {{ user.username }}">
-                                
-                                <!-- Favourite Button Form -->
-                                <form method="post" action="{% url 'toggle-favourite' photo.id %}" class="favourite-form">
-                                    {% csrf_token %}
-                                    <button type="submit" class="favourite-btn {% if photo.is_favourite %}active{% endif %}" title="Favourite">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                    </button>
-                                </form>
-
-                                <!-- Delete Button Form -->
-                                <form method="post" action="{% url 'delete-photo' photo.id %}" class="delete-form">
-                                    {% csrf_token %}
-                                    <button type="submit" class="delete-btn" title="Delete Photo">&times;</button>
-                                </form>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% empty %}
-                <p class="empty-gallery-message">Your gallery is empty. Upload your first photo!</p>
             {% endfor %}
         </div>
     </div>
+    {% empty %}
+        <p class="empty-gallery-message">Your gallery is empty. Upload your first media!</p>
+    {% endfor %}
+</div>
+</div>
 
-    <div id="imageModal" class="modal">
-        <span class="close-btn">&times;</span>
-        <img class="modal-content" id="modalImage">
-    </div>
+<div id="imageModal" class="modal">
+    <span class="close-btn">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
 
+<script>
+// Modal
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+document.querySelectorAll(".photo-card img").forEach(img=>{
+    img.onclick = ()=>{ modal.style.display="flex"; modalImg.src=img.src; }
+});
+document.querySelector(".close-btn").onclick = ()=>{ modal.style.display="none"; }
+window.onclick = (e)=>{ if(e.target==modal) modal.style.display="none"; }
 
-    <script>
-        // Get the modal element
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-
-        // Get all images in the photo grid
-        const galleryImages = document.querySelectorAll(".photo-card img");
-
-        // Loop through each image and add a click event listener
-        galleryImages.forEach(img => {
-            img.onclick = function() {
-                modal.style.display = "flex"; // Show the modal
-                modalImg.src = this.src; // Set the modal image source to the clicked image's source
-            }
-        });
-
-        // Get the <span> element that closes the modal
-        const closeButton = document.querySelector(".close-btn");
-
-        // When the user clicks on <span> (x), close the modal
-        closeButton.onclick = function() {
-            modal.style.display = "none";
+// Upload Progress Bar
+const uploadForm = document.getElementById('uploadForm');
+const progressBar = document.getElementById('progressBar');
+uploadForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const formData = new FormData(uploadForm);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', uploadForm.action, true);
+    xhr.upload.onprogress = function(e){
+        if(e.lengthComputable){
+            const percent = (e.loaded / e.total) * 100;
+            progressBar.style.width = percent + '%';
         }
-
-        // When the user clicks anywhere on the modal background (not the image), close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
-
+    };
+    xhr.onload = function(){ if(xhr.status==200){ progressBar.style.width='0%'; location.reload(); } }
+    xhr.send(formData);
+});
+</script>
 </body>
 </html>

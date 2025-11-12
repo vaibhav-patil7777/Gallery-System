@@ -4,8 +4,199 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ album.title }}</title>
-    <link rel="stylesheet" href="{% static 'photos/css/gallery.css' %}">
-    <link rel="stylesheet" href="{% static 'photos/css/albums.css' %}">
+    <style>
+        /* ---------- BODY & BACKGROUND ---------- */
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #101820, #1a1a1a);
+            color: #eaeaea;
+        }
+
+        /* ---------- MAIN CONTAINER ---------- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 25px 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ---------- HEADER ---------- */
+        .album-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #0dcaf0;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #20c997;
+        }
+
+        .album-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0;
+            color: #f8f9fa;
+            text-shadow: 0 0 10px rgba(13, 202, 240, 0.4);
+        }
+
+        /* ---------- UPLOAD FORM ---------- */
+        .upload-form form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(40, 40, 40, 0.9);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            box-shadow: 0 0 10px rgba(13, 202, 240, 0.2);
+        }
+
+        .upload-form input[type="file"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: #2c2c2c;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .upload-form button {
+            background: linear-gradient(135deg, #0dcaf0, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 202, 240, 0.3);
+        }
+
+        /* ---------- PHOTO GRID ---------- */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .photo-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .photo-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(13, 202, 240, 0.3);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .empty-gallery-message {
+            text-align: center;
+            font-size: 18px;
+            color: #adb5bd;
+            grid-column: 1 / -1;
+        }
+
+        /* ---------- MODAL ---------- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background-color: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 12px;
+            animation: zoom 0.3s ease;
+        }
+
+        @keyframes zoom {
+            from { transform: scale(0.6) }
+            to { transform: scale(1) }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #0dcaf0;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 768px) {
+            .upload-form form {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .upload-form button,
+            .upload-form input[type="file"] {
+                width: 100%;
+            }
+
+            .album-header h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .photo-card img {
+                height: 160px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -14,12 +205,12 @@
             <h1>{{ album.title }}</h1>
         </div>
 
-        <!-- Corrected Upload Form -->
+        <!-- Upload Form -->
         <div class="upload-form">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="file" name="image_files" multiple required>
-                <button type="submit">Add Photos to Album</button>
+                <button type="submit">Add Photos</button>
             </form>
         </div>
 
@@ -35,23 +226,18 @@
         </div>
     </div>
 
+    <!-- Modal -->
     <div id="imageModal" class="modal">
         <span class="close-btn">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>
 
-
-    <!-- ... aapka modal HTML ... -->
-
     <script>
-        // Get the modal element
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImage");
-
-        // Get all images in the photo grid on THIS page
         const galleryImages = document.querySelectorAll(".photo-card img");
+        const closeButton = document.querySelector(".close-btn");
 
-        // Loop through each image and add a click event listener
         galleryImages.forEach(img => {
             img.onclick = function() {
                 modal.style.display = "flex";
@@ -59,21 +245,8 @@
             }
         });
 
-        // Get the <span> element that closes the modal
-        const closeButton = document.querySelector(".close-btn");
-
-        // When the user clicks on <span> (x), close the modal
-        closeButton.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere on the modal background, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        closeButton.onclick = () => modal.style.display = "none";
+        window.onclick = e => { if (e.target == modal) modal.style.display = "none"; }
     </script>
-
 </body>
 </html>

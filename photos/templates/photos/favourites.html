@@ -4,8 +4,192 @@
 <head>
     <meta charset="UTF-8">
     <title>My Favourites</title>
-    <link rel="stylesheet" href="{% static 'photos/css/gallery.css' %}">
-    <link rel="stylesheet" href="{% static 'photos/css/albums.css' %}">
+    <style>
+        /* ==================== APPLE DARK BODY ==================== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top left, #0a0a0a, #121212, #1a1a1a);
+            margin: 0;
+            padding: 25px;
+            color: #f1f1f1;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(18px);
+            border-radius: 20px;
+            padding: 30px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        /* ==================== HEADER ==================== */
+        .album-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #4da3ff;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #82c4ff;
+            text-shadow: 0 0 5px #4da3ff;
+        }
+
+        h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin: 0;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.15);
+        }
+
+        /* ==================== PHOTO GRID ==================== */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .photo-card {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: rgba(40,40,40,0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease, filter 0.3s ease;
+            border-radius: 18px;
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.07);
+            filter: brightness(1.15);
+        }
+
+        .empty-gallery-message {
+            text-align: center;
+            font-size: 18px;
+            color: #aaaaaa;
+            grid-column: 1 / -1;
+            margin-top: 50px;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0,0,0,0.95);
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 14px;
+            animation: zoom 0.3s ease;
+        }
+
+        @keyframes zoom {
+            from {transform: scale(0.8); opacity: 0;}
+            to {transform: scale(1); opacity: 1;}
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 45px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #4da3ff;
+            text-shadow: 0 0 8px #4da3ff;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 25px 30px;
+            }
+            h1 {
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .album-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 20px;
+            }
+
+            .photo-card img {
+                height: 200px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px 18px;
+                border-radius: 14px;
+            }
+
+            .photo-card img {
+                height: 160px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -18,50 +202,33 @@
             {% for photo in photos %}
                 <div class="photo-card">
                     <img src="{{ photo.image.url }}" alt="Favourite Photo">
-                    </div>
+                </div>
             {% empty %}
                 <p class="empty-gallery-message">You haven't added any photos to your favourites yet.</p>
             {% endfor %}
         </div>
     </div>
 
-
     <div id="imageModal" class="modal">
         <span class="close-btn">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>
 
-
     <script>
-        // Get the modal element
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImage");
-
-        // Get all images in the photo grid
         const galleryImages = document.querySelectorAll(".photo-card img");
 
-        // Loop through each image and add a click event listener
         galleryImages.forEach(img => {
             img.onclick = function() {
-                modal.style.display = "flex"; // Show the modal
-                modalImg.src = this.src; // Set the modal image source to the clicked image's source
+                modal.style.display = "flex";
+                modalImg.src = this.src;
             }
         });
 
-        // Get the <span> element that closes the modal
         const closeButton = document.querySelector(".close-btn");
-
-        // When the user clicks on <span> (x), close the modal
-        closeButton.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere on the modal background (not the image), close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        closeButton.onclick = () => { modal.style.display = "none"; }
+        window.onclick = (event) => { if(event.target == modal) modal.style.display = "none"; }
     </script>
 </body>
 </html>

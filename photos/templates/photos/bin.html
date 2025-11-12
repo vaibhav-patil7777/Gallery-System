@@ -2,10 +2,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bin</title>
-    <link rel="stylesheet" href="{% static 'photos/css/gallery.css' %}">
-    <link rel="stylesheet" href="{% static 'photos/css/albums.css' %}">
+<meta charset="UTF-8">
+<title>Bin</title>
+<style>
+    /* ---------- BODY ---------- */
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+        color: #f8f9fa;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(30, 30, 30, 0.85);
+        backdrop-filter: blur(12px);
+        padding: 25px 35px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ---------- HEADER ---------- */
+    .album-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .back-link {
+        text-decoration: none;
+        color: #0dcaf0;
+        font-weight: 500;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .back-link:hover {
+        color: #20c997;
+        text-shadow: 0 0 10px rgba(13, 202, 240, 0.6);
+    }
+
+    h1 {
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(13, 202, 240, 0.4);
+    }
+
+    h2 {
+        font-size: 26px;
+        font-weight: 600;
+        margin: 30px 0 15px 0;
+        color: #0dcaf0;
+    }
+
+    p {
+        font-size: 16px;
+        color: #adb5bd;
+    }
+
+    .section-divider {
+        border: none;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.1);
+        margin: 40px 0;
+    }
+
+    /* ---------- PHOTO GRID ---------- */
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .photo-card {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+    .photo-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 30px rgba(13, 202, 240, 0.3);
+    }
+
+    .photo-card img,
+    .photo-card video {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+        border-radius: 15px 15px 0 0;
+        transition: transform 0.4s ease;
+    }
+
+    .photo-card:hover img,
+    .photo-card:hover video {
+        transform: scale(1.08);
+    }
+
+    /* ---------- PHOTO ACTIONS ---------- */
+    .photo-actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .photo-card:hover .photo-actions {
+        opacity: 1;
+    }
+
+    .photo-actions button {
+        border: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-restore {
+        background: linear-gradient(135deg, #0dcaf0, #20c997);
+    }
+
+    .btn-restore:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(13, 202, 240, 0.6);
+    }
+
+    .btn-delete-perm {
+        background: linear-gradient(135deg, #dc3545, #b02a37);
+    }
+
+    .btn-delete-perm:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+    }
+
+    .empty-gallery-message {
+        text-align: center;
+        font-size: 18px;
+        color: #6c757d;
+        grid-column: 1 / -1;
+        margin-top: 40px;
+    }
+
+    .video-thumbnail {
+        height: 220px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+        background-color: #111;
+    }
+
+    /* ---------- MODAL ---------- */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.95);
+    }
+
+    .modal-content {
+        max-width: 90%;
+        max-height: 90vh;
+        border-radius: 12px;
+        animation: zoom 0.3s ease;
+    }
+
+    @keyframes zoom {
+        from { transform: scale(0.6); }
+        to { transform: scale(1); }
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+        color: #0dcaf0;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 768px) {
+        .photo-grid {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .photo-grid {
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        }
+
+        .photo-card img, .photo-card video {
+            height: 160px;
+        }
+    }
+</style>
 </head>
 <body>
     <div class="container">
@@ -13,7 +238,7 @@
             <a href="{% url 'album-list' %}" class="back-link">&larr; Back to Collections</a>
             <h1>Bin</h1>
         </div>
-        <p>Photos in the bin will be deleted permanently after 30 days.</p>
+        <p>🕒 Photos in the bin will be deleted permanently after 30 days.</p>
 
         <h2>Deleted Photos</h2>
         <div class="photo-grid">
@@ -21,12 +246,10 @@
                 <div class="photo-card">
                     <img src="{{ photo.image.url }}" alt="Binned Photo">
                     <div class="photo-actions">
-                        <!-- Restore Form -->
                         <form method="post" action="{% url 'restore-photo' photo.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn-restore">Restore</button>
                         </form>
-                        <!-- Permanent Delete Form -->
                         <form method="post" action="{% url 'delete-photo-permanently' photo.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn-delete-perm">Delete Forever</button>
@@ -38,8 +261,8 @@
             {% endfor %}
         </div>
 
+        <hr class="section-divider">
 
-        <hr class="section-divider" style="margin: 30px 0;">
         <h2>Deleted Videos</h2>
         <div class="photo-grid">
             {% for video in videos %}
@@ -48,12 +271,10 @@
                         <source src="{{ video.video_file.url }}" type="video/mp4">
                     </video>
                     <div class="photo-actions">
-                        <!-- Naya Restore Form (videos ke liye) -->
                         <form method="post" action="{% url 'restore-video' video.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn-restore">Restore</button>
                         </form>
-                        <!-- Naya Permanent Delete Form (videos ke liye) -->
                         <form method="post" action="{% url 'delete-video-permanently' video.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn-delete-perm">Delete Forever</button>
@@ -66,43 +287,27 @@
         </div>
     </div>
 
+    <!-- Modal -->
     <div id="imageModal" class="modal">
         <span class="close-btn">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>
 
-
     <script>
-        // Get the modal element
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImage");
-
-        // Get all images in the photo grid
         const galleryImages = document.querySelectorAll(".photo-card img");
+        const closeButton = document.querySelector(".close-btn");
 
-        // Loop through each image and add a click event listener
         galleryImages.forEach(img => {
             img.onclick = function() {
-                modal.style.display = "flex"; // Show the modal
-                modalImg.src = this.src; // Set the modal image source to the clicked image's source
+                modal.style.display = "flex";
+                modalImg.src = this.src;
             }
         });
 
-        // Get the <span> element that closes the modal
-        const closeButton = document.querySelector(".close-btn");
-
-        // When the user clicks on <span> (x), close the modal
-        closeButton.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere on the modal background (not the image), close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        closeButton.onclick = () => modal.style.display = "none";
+        window.onclick = e => { if (e.target == modal) modal.style.display = "none"; };
     </script>
-
 </body>
 </html>

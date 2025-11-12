@@ -2,85 +2,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Collections</title>
-    <link rel="stylesheet" href="{% static 'photos/css/gallery.css' %}">
-    <link rel="stylesheet" href="{% static 'photos/css/albums.css' %}">
+  <meta charset="UTF-8">
+  <title>Collections</title>
+  <style>
+    /* ==================== GENERAL BODY ==================== */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #0a0a0a, #050505 60%);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 25px 35px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.05);
+    }
+
+    /* ==================== HEADER ==================== */
+    .collections-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .home-link-icon {
+      display: inline-flex;
+      padding: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .home-link-icon:hover {
+      background: rgba(0, 255, 255, 0.15);
+      transform: scale(1.1);
+    }
+
+    .home-link-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: #0ef;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 20px 0;
+      background: linear-gradient(90deg, #0ef, #00ffcc);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #e0e0e0;
+    }
+
+    .section-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.3), transparent);
+      margin: 25px 0;
+    }
+
+    /* ==================== FEATURE GRID ==================== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      font-weight: 600;
+      color: #0ef;
+      text-decoration: none;
+      transition: all 0.35s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Favourites (no neon glow) */
+    .feature-card[href*="favourites"] {
+      color: #fff;
+    }
+
+    /* Others get neon hover */
+    .feature-card:hover:not([href*="favourites"]) {
+      transform: translateY(-6px);
+      box-shadow: 0 0 15px rgba(0,255,255,0.4);
+    }
+
+    /* Favourites hover (simple lift only) */
+    .feature-card[href*="favourites"]:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    /* ==================== CREATE ALBUM ==================== */
+    .create-album-form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .create-album-form input[type="text"] {
+      flex-grow: 1;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .create-album-form input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .create-album-form button {
+      background: linear-gradient(135deg, #00ffff, #00ffcc);
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .create-album-form button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0,255,255,0.5);
+    }
+
+    /* ==================== ALBUM GRID ==================== */
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+    }
+
+    .album-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      text-align: center;
+      text-decoration: none;
+      color: #e0e0e0;
+      overflow: hidden;
+      transition: all 0.35s ease;
+    }
+
+    .album-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 15px rgba(0,255,255,0.3);
+    }
+
+    .album-thumbnail {
+      height: 160px;
+      overflow: hidden;
+    }
+
+    .album-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+
+    .album-card:hover .album-thumbnail img {
+      transform: scale(1.1);
+    }
+
+    .album-title {
+      padding: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .album-delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: rgba(255, 50, 50, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .album-delete-btn:hover {
+      background-color: #ff4040;
+      transform: scale(1.1);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+      .feature-grid {
+        gap: 15px;
+      }
+      .album-grid {
+        gap: 15px;
+      }
+      h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
 
-        <!-- Header with Home Icon and Title -->
-        <div class="collections-header">
-            <a href="{% url 'gallery' %}" class="home-link-icon" title="Back to Main Gallery">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </a>
+    <div class="collections-header">
+      <a href="{% url 'gallery' %}" class="home-link-icon" title="Back to Gallery">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </a>
 
-            <a href="{% url 'search' %}" class="home-link-icon" title="Go to Search">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            </a>
-            
-        </div>
-
-        <h1>Collections</h1>
-        <!-- Top row of feature placeholders -->
-        <div class="feature-grid">
-            <a href="{% url 'view-favourites' %}" class="feature-card">Favourites</a>
-            <a href="{% url 'view-bin' %}" class="feature-card">Bin</a>
-            <a href="{% url 'view-videos' %}" class="feature-card">Videos</a>
-            <a href="{% url 'recently-added' %}" class="feature-card">Recently Added</a>
-        </div>
-
-        <hr class="section-divider">
-
-        <h2>Albums</h2>
-
-        <!-- Form to create a new album -->
-        <div class="create-album-container">
-            <form method="post" action="{% url 'create-album' %}" class="create-album-form">
-                {% csrf_token %}
-                <input type="text" name="album_title" placeholder="Enter new album name" required>
-                <button type="submit" title="Create New Album">+</button>
-            </form>
-        </div>
-        
-        <!-- Grid to display all existing albums -->
-        <div class="album-grid">
-            {% for album in albums %}
-                <div class="album-card-wrapper">
-                    <a href="{% url 'album-detail' album.id %}" class="album-card">
-                        <div class="album-thumbnail">
-                            {% if album.cover_photo %}
-                                <!-- If album has photos, show the first one as a cover -->
-                                <img src="{{ album.cover_photo.image.url }}" alt="{{ album.title }} cover">
-                            {% else %}
-                                <!-- If album is empty, show a placeholder -->
-                                <div class="album-thumbnail-empty">
-                                    <span>Empty</span>
-                                </div>
-                            {% endif %}
-                            
-                        </div>
-                        <div class="album-title">{{ album.title }}</div>
-                    </a>
-                    <!-- Delete form and button for each album -->
-                    <form method="post" action="{% url 'delete-album' album.id %}" class="album-delete-form">
-                        {% csrf_token %}
-                        <button type="submit" class="album-delete-btn" title="Delete Album">&times;</button>
-                    </form>
-                </div>
-            {% empty %}
-                <p>You haven't created any albums yet for this user.</p>
-            {% endfor %}
-        </div>
-
+      <a href="{% url 'search' %}" class="home-link-icon" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </a>
     </div>
-    
+
+    <h1>Collections</h1>
+
+    <div class="feature-grid">
+      <a href="{% url 'view-favourites' %}" class="feature-card">Favourites</a>
+      <a href="{% url 'view-bin' %}" class="feature-card">Bin</a>
+      <a href="{% url 'view-videos' %}" class="feature-card">Videos</a>
+      <a href="{% url 'recently-added' %}" class="feature-card">Recently Added</a>
+    </div>
+
+    <hr class="section-divider">
+
+    <h2>Albums</h2>
+
+    <form method="post" action="{% url 'create-album' %}" class="create-album-form">
+      {% csrf_token %}
+      <input type="text" name="album_title" placeholder="Enter new album name" required>
+      <button type="submit" title="Create Album">+</button>
+    </form>
+
+    <div class="album-grid">
+      {% for album in albums %}
+      <div class="album-card-wrapper" style="position: relative;">
+        <a href="{% url 'album-detail' album.id %}" class="album-card">
+          <div class="album-thumbnail">
+            {% if album.cover_photo %}
+              <img src="{{ album.cover_photo.image.url }}" alt="{{ album.title }}">
+            {% else %}
+              <div class="album-thumbnail-empty"><span>Empty</span></div>
+            {% endif %}
+          </div>
+          <div class="album-title">{{ album.title }}</div>
+        </a>
+        <form method="post" action="{% url 'delete-album' album.id %}" style="position:absolute;top:5px;right:5px;">
+          {% csrf_token %}
+          <button type="submit" class="album-delete-btn">&times;</button>
+        </form>
+      </div>
+      {% empty %}
+      <p>No albums created yet.</p>
+      {% endfor %}
+    </div>
+  </div>
 </body>
 </html>
