@@ -4,19 +4,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery Application</title>
-    <link rel="stylesheet" href="{% static 'photos/css/signup.css' %}">
+    <title>Gallery Application - Sign Up</title>
+
+    <style>
+        /* === Global Reset === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* === Background Styling === */
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at top left, #1a1a1a, #000 70%);
+            overflow: hidden;
+        }
+
+        /* === Floating Neon Background Effects === */
+        body::before {
+            content: "";
+            position: absolute;
+            top: -150px;
+            left: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.25), transparent 70%);
+            filter: blur(80px);
+            animation: float1 8s infinite alternate ease-in-out;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            bottom: -150px;
+            right: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 119, 255, 0.3), transparent 70%);
+            filter: blur(80px);
+            animation: float2 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes float1 {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+        }
+
+        @keyframes float2 {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-50px, -50px); }
+        }
+
+        /* === Signup Box === */
+        .signup-container {
+            position: relative;
+            z-index: 5;
+            width: 90%;
+            max-width: 420px;
+            padding: 45px 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            text-align: center;
+            transition: 0.4s ease;
+        }
+
+        .signup-container:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        /* === Heading === */
+        .signup-container h2 {
+            margin-bottom: 25px;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #00fff7;
+            text-shadow: 0 0 15px #00fff7;
+        }
+
+        /* === Input Fields === */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            color: #fff;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input:focus {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 10px #00fff7;
+        }
+
+        /* === Password Hint === */
+        .password-hint {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-align: left;
+            margin-top: -8px;
+            display: none;
+            transition: 0.3s ease;
+        }
+
+        input[type="password"]:focus + .password-hint {
+            display: block;
+            color: #00fff7;
+            text-shadow: 0 0 5px #00fff7;
+        }
+
+        /* === Button === */
+        button {
+            margin-top: 10px;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #0077ff, #00fff7);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #00fff7;
+        }
+
+        /* === Login Link === */
+        .login-link {
+            margin-top: 25px;
+        }
+
+        .login-link p {
+            font-size: 0.95rem;
+            color: #bbb;
+        }
+
+        .login-link a {
+            color: #00fff7;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .login-link a:hover {
+            text-shadow: 0 0 10px #00fff7;
+        }
+
+        /* === Responsive Design === */
+        @media (max-width: 768px) {
+            .signup-container {
+                max-width: 380px;
+                padding: 35px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 30px 20px;
+            }
+
+            .signup-container h2 {
+                font-size: 1.6rem;
+            }
+
+            button {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-   <div class="signup-container">
+    <div class="signup-container">
         <h2>Sign Up</h2>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <input type="text" name="username" placeholder="Enter Username" required>
+            <input type="email" name="email" placeholder="Enter Email Address" required>
+            <input type="password" name="password1" placeholder="Enter Password" required>
+            <div class="password-hint">Password should be at least 8 characters, include letters and numbers.</div>
+            <input type="password" name="password2" placeholder="Confirm Password" required>
             <button type="submit">Sign Up</button>
         </form>
+
         <div class="login-link">
-            <p>Already have an Account! <a href="{% url 'login' %}">login here</a></p>
+            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
         </div>
     </div>
 </body>
